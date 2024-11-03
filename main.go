@@ -36,6 +36,10 @@ func parseMapping(s string) (Mapping, error) {
 func main() {
 	var mappingsRaw arrayFlags
 	flag.Var(&mappingsRaw, "map", "Mapping in the format vanity-domain:repo-base (can be specified multiple times)")
+
+	var port string
+	flag.StringVar(&port, "port", "8080", "Port to listen on")
+
 	flag.Parse()
 
 	if len(mappingsRaw) == 0 {
@@ -98,11 +102,11 @@ func main() {
 		}
 	})
 
-	log.Printf("Starting server on :8080 with mappings:")
+	log.Printf("Starting server on port %s", port)
 	for domain, repo := range mappings {
 		log.Printf("  %s -> %s", domain, repo)
 	}
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }
